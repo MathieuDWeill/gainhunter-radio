@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📻 SOS RADIO — Réponses Prioritaires</title>
+    <meta name="description" content="Assistant mobile de réponses instantanées pour les appels de jeux-concours radio.">
+    <meta name="theme-color" content="#0A0D14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SOS Radio">
+    <style>
+        :root {
+            --bg-main: #0A0D14;
+            --bg-card: #131A26;
+            --bg-highlight: #1E293B;
+            --text-primary: #FFFFFF;
+            --text-muted: #94A3B8;
+            --accent-gold: #FBBF24;
+            --accent-cyan: #38BDF8;
+            --accent-green: #34D399;
+            --accent-red: #EF4444;
+            --border-glow: #2563EB;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.4;
+            padding: 12px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(135deg, #1E1B4B, #0F172A);
+            border: 2px solid #4338CA;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--accent-gold);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .header-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .status-pill {
+            display: inline-block;
+            background: #064E3B;
+            color: var(--accent-green);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 10px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-title.red {
+            color: #F87171;
+        }
+        .section-title.cyan {
+            color: var(--accent-cyan);
+        }
+        .section-title.gold {
+            color: var(--accent-gold);
+        }
+        
+        /* CARD PRINCIPALE D'APPEL DIRECT */
+        .priority-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-glow);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .radio-tag {
+            background: #2563EB;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+        }
+        .call-window {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+        .trigger-box {
+            background: #1E293B;
+            border-left: 4px solid var(--accent-gold);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #E2E8F0;
+            margin: 8px 0;
+        }
+        
+        /* RÉPONSE EXACTE EN TRÈS GROS */
+        .huge-answer-box {
+            background: linear-gradient(135deg, #064E3B, #022C22);
+            border: 2px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .answer-label {
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .huge-answer-text {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFFFFF;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(52, 211, 153, 0.5);
+            word-break: break-word;
+        }
+        .instruction-banner {
+            background: #78350F;
+            border: 1px solid #D97706;
+            color: #FEF3C7;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .meta-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #1E293B;
+        }
+
+        /* TABLEAUX ET LISTES */
+        .secondary-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .mini-card {
+            background: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .mini-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .mini-answer {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin: 4px 0;
+        }
+        .mini-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* GUIDES ET FOOTER */
+        .iphone-guide {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 24px;
+            font-size: 13px;
+        }
+        .iphone-guide h3 {
+            color: var(--accent-cyan);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .iphone-guide ol {
+            padding-left: 20px;
+            color: #CBD5E1;
+        }
+        .iphone-guide li {
+            margin-bottom: 4px;
+        }
+        footer {
+            text-align: center;
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📻 SOS RADIO</h1>
+        <div class="header-sub">Réponses instantanées en direct pour appels téléphoniques</div>
+        <div class="status-pill">● 9 JEUX SURVEILLÉS — MIS À JOUR : 22/11/2026 à 17:22</div>
+    </header>
+
+    <!-- SECTION 1 : PHRASES À PRONONCER PRIORITAIRES -->
+    <div class="section-title red">🔴 1. À DIRE IMMÉDIATEMENT AU DÉCROCHÉ</div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#EA580C;">Alouette</span>
+            <span class="call-window">⏰ 06:00 - 09:30 (Du lundi au vendredi)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">Alouette double votre prime de Noël</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « Quelle est la radio qui double votre prime ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« ALOUETTE ! »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Dire immédiatement « Alouette » dès le décroché téléphonique.
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>Jusqu&#x27;à 2 500 € de prime de Noël doublée</strong></span>
+            <span>✅ Règlement Alouette 2026 — Antenne Grand Ouest</span>
+        </div>
+    </div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#0284C7;">Fun Radio</span>
+            <span class="call-window">⏰ 06:00 - 10:00 (Du lundi au vendredi)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">Tout le monde veut du cash / Bruno sur Fun Radio</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « Quelle est la seule radio qui vous réveille avec le sourire ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« FUN RADIO ! »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Dire immédiatement « Fun Radio » dès que vous décrochez.
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>Jusqu&#x27;à 5 000 € cash par tirage direct</strong></span>
+            <span>✅ Règlement officiel Fun Radio 2026 — Article 5.2</span>
+        </div>
+    </div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#DC2626;">NRJ</span>
+            <span class="call-window">⏰ 06:00 - 10:00 (Du lundi au vendredi)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">Manu double votre salaire</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « Quelle est la seule radio qui double votre salaire ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« NRJ ! »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Décrocher avant la 4ème sonnerie et prononcer immédiatement « NRJ » sans dire « Allô ».
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>Votre salaire net mensuel doublé (cash par virement)</strong></span>
+            <span>✅ Règlement Officiel NRJ 2026 — Article 4.1</span>
+        </div>
+    </div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#2563EB;">Rire &amp; Chansons</span>
+            <span class="call-window">⏰ En journée (09:00 - 18:00)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">Invitations VIP Elie Semoun au Casino de Paris</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « Quel humoriste se produit au Casino de Paris ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« ÉLIE SEMOUN »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Confirmer le nom « Élie Semoun » pour validation de l&#x27;attribution des places.
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>2 places VIP spectacle Casino de Paris</strong></span>
+            <span>✅ Base GainHunter Concours #43 / Rire &amp; Chansons</span>
+        </div>
+    </div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#B91C1C;">RTL</span>
+            <span class="call-window">⏰ 09:30 - 11:00 &amp; 16:30 - 18:00 (Du lundi au vendredi)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">La Valise RTL</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « Quel est le montant exact de la Valise RTL ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« 18 500 € »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Donner le montant exact en euros sans arrondir (dix-huit mille cinq cents euros).
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>La totalité de la somme contenue dans la Valise (18 500 €)</strong></span>
+            <span>✅ Montant officiel vérifié à l&#x27;antenne RTL (22/11/2026)</span>
+        </div>
+    </div>
+
+    <div class="priority-card">
+        <div class="card-header">
+            <span class="radio-tag" style="background:#000000;">Skyrock</span>
+            <span class="call-window">⏰ 06:00 - 09:15 (Du lundi au vendredi)</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#CBD5E1;margin-top:2px;">La Roulette Skyrock (1500€ cash)</div>
+        
+        <div class="trigger-box">
+            ❓ Question : « C&#x27;est qui ? »
+        </div>
+
+        <div class="huge-answer-box">
+            <div class="answer-label">▶ CE QU'IL FAUT RÉPONDRE :</div>
+            <div class="huge-answer-text">« SKYROCK ! »</div>
+        </div>
+
+        <div class="instruction-banner">
+            ⚠️ Répondre avec énergie « Skyrock ! » sans hésiter dès que Difool demande « C&#x27;est qui ? ».
+        </div>
+
+        <div class="meta-line">
+            <span>🎁 Lot : <strong>1 500 € cash ou cagnotte accumulée</strong></span>
+            <span>✅ Règlement officiel Skyrock Morning — Article 3</span>
+        </div>
+    </div>
+
+    <!-- SECTION 2 : QUESTIONS / RÉPONSES SECONDAIRES -->
+    <div class="section-title gold">📋 2. AUTRES STATIONS & FORMULES VÉRIFIÉES</div>
+    <div class="secondary-grid">
+
+        <div class="mini-card">
+            <div class="mini-header">
+                <span style="color:var(--accent-cyan);font-weight:900;">📻 Chérie FM</span>
+                <span style="color:var(--accent-gold);">06:00 - 09:00 (Du lundi au vendredi)</span>
+            </div>
+            <div style="font-size:12px;color:#E2E8F0;margin-top:2px;">« Quelle est la plus belle des radios ? »</div>
+            <div class="mini-answer">« CHÉRIE FM ! »</div>
+            <div class="mini-desc">🎁 Voyage d&#x27;une valeur de 3 000 € · <em>Dire immédiatement « Chérie FM » au décroché.</em></div>
+        </div>
+
+        <div class="mini-card">
+            <div class="mini-header">
+                <span style="color:var(--accent-cyan);font-weight:900;">📻 Europe 2</span>
+                <span style="color:var(--accent-gold);">06:00 - 10:00 (Du lundi au vendredi)</span>
+            </div>
+            <div style="font-size:12px;color:#E2E8F0;margin-top:2px;">« Quel est le meilleur son ? »</div>
+            <div class="mini-answer">« EUROPE 2 ! »</div>
+            <div class="mini-desc">🎁 1 000 € cash ou séjours concert · <em>Répondre « Europe 2 » dès le premier mot prononcé.</em></div>
+        </div>
+
+        <div class="mini-card">
+            <div class="mini-header">
+                <span style="color:var(--accent-cyan);font-weight:900;">📻 Nostalgie</span>
+                <span style="color:var(--accent-gold);">06:00 - 09:30 (Du lundi au vendredi)</span>
+            </div>
+            <div style="font-size:12px;color:#E2E8F0;margin-top:2px;">« Quelle est la radio des plus grands hits ? »</div>
+            <div class="mini-answer">« NOSTALGIE ! »</div>
+            <div class="mini-desc">🎁 1 an de salaire net offert · <em>Prononcer « Nostalgie » sans dire « Allô ».</em></div>
+        </div>
+
+    </div>
+
+    <!-- SECTION 3 : CONCOURS ACTIFS & RÈGLES -->
+    <div class="section-title cyan">🎯 3. CONDITIONS OFFICIELLES & HORAIRES</div>
+    <div class="secondary-grid">
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Alouette — Alouette double votre prime de Noël</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 09:30 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Première radio régionale de France, très active dans le Grand Ouest.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Fun Radio — Tout le monde veut du cash / Bruno sur Fun Radio</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 10:00 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Si question secondaire posée : « Bruno sur Fun Radio ».</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 NRJ — Manu double votre salaire</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 10:00 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Règle stricte : prononcer le mot « Allô » entraîne l&#x27;élimination immédiate.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Rire &amp; Chansons — Invitations VIP Elie Semoun au Casino de Paris</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>En journée (09:00 - 18:00)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Issu de la sélection de concours réels enregistrés en base.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 RTL — La Valise RTL</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>09:30 - 11:00 &amp; 16:30 - 18:00 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Le montant augmente de 500 € à chaque appel infructueux.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Skyrock — La Roulette Skyrock (1500€ cash)</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 09:15 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Les appels ont lieu en direct pendant les sessions de libre antenne matinale.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Chérie FM — Le Réveil Chérie vous offre vos vacances</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 09:00 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Groupe NRJ.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Europe 2 — Le Meilleur Son Europe 2</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 10:00 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Anciennement Virgin Radio.</div>
+        </div>
+
+        <div class="mini-card" style="border-left: 3px solid var(--accent-cyan);">
+            <div style="font-weight:800;font-size:13px;color:#F1F5F9;">📻 Nostalgie — Le Salaire Nostalgie</div>
+            <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Plage d'appel : <strong>06:00 - 09:30 (Du lundi au vendredi)</strong></div>
+            <div style="font-size:12px;color:#94A3B8;">Groupe NRJ.</div>
+        </div>
+
+    </div>
+
+    <!-- SECTION 4 : SOURCES OFFICIELLES -->
+    <div class="section-title" style="color:#A7F3D0;">🔗 4. SOURCES OFFICIELLES & VÉRIFICATION</div>
+    <div class="mini-card" style="font-size:12px;color:var(--text-muted);">
+        <p>Les réponses ci-dessus sont extraites directement des règlements officiels des radios et des déclarations d'antenne vérifiées par NightShift GainHunter.</p>
+        <p style="margin-top:6px;">Dernière vérification déterministe : <strong>22/11/2026 à 17:22</strong> · Zéro modèle probabiliste externe.</p>
+    </div>
+
+    <!-- GUIDE RACCOURCI IPHONE EN 1 CLIC -->
+    <div class="iphone-guide">
+        <h3>📱 Raccourci 1-Clic pour iPhone (Safari)</h3>
+        <ol>
+            <li>Ouvrez cette page dans <strong>Safari</strong> sur votre iPhone.</li>
+            <li>Touchez l'icône <strong>Partager</strong> (carré avec une flèche vers le haut en bas).</li>
+            <li>Faites défiler vers le bas et touchez <strong>« Sur l'écran d'accueil »</strong>.</li>
+            <li>Nommez le raccourci <strong>« SOS Radio »</strong> et touchez <strong>Ajouter</strong>.</li>
+        </ol>
+        <div style="margin-top:8px;font-size:11px;color:var(--accent-gold);">
+            ⚡ L'icône apparaîtra sur votre écran d'accueil et s'ouvrira instantanément au moment où une radio vous appelle !
+        </div>
+    </div>
+
+    <footer>
+        NightShift Sovereign Apex — GainHunter SOS Radio · Hébergé sur GitHub Pages · Données Publiques Zéro Secret
+    </footer>
+
+</body>
+</html>
